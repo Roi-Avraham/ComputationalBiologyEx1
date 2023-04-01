@@ -2,6 +2,7 @@ import numpy as np
 from random import random, randint, shuffle
 from matplotlib import pyplot as plt
 from state import State
+import random
 from style import palette
 
 DIM = 100
@@ -41,12 +42,11 @@ class Person:
         else:
             self.has_rumor = True
 
-
-    def spread_rumor(self, grid):
+    def spread_rumor(self, grid, all_persons):
         next_generation_rumor_spreaders = []
         for person in grid:
             if person.has_rumor:
-                for neighbor in self.get_neighbors(person, grid):
+                for neighbor in self.get_neighbors(person, all_persons):
                     if not neighbor.has_rumor:
                         neighbor.received_rumor_from += 1
                         if neighbor.skepticism == "S4":
@@ -73,35 +73,31 @@ class Person:
         for rumor_spreader in next_generation_rumor_spreaders:
             rumor_spreader.has_rumor = True
 
-    def update(self, grid):
-        for person in grid:
-            if person.generations_since_transmission < self.L:
-                person.generations_since_transmission += 1
-            else:
-                person.has_rumor = False
-                person.received_rumor_from = 0
-                person.last_generation_transmitter = None
-
     def get_neighbors(self, person, grid):
-        i, j = self.get_person_index(person, grid)
+        position = person.pos
+        i, j = position
         neighbors = []
         for di in range(-1, 2):
             for dj in range(-1, 2):
                 if di == 0 and dj == 0:
                     continue
                 neighbor_i, neighbor_j = i + di, j + dj
-                if neighbor_i < 0 or neighbor_i >= len(grid) or \
-                        neighbor_j < 0 or neighbor_j >= len(grid[0]):
+                if neighbor_i < 0 or neighbor_i >= DIM or \
+                        neighbor_j < 0 or neighbor_j >= DIM:
                     continue
-                neighbors.append(grid[neighbor_i][neighbor_j])
+                if grid[neighbor_i][neighbor_j].get() is not None:
+                    neighbors.append(grid[neighbor_i][neighbor_j].get())
         return neighbors
 
-    def get_person_index(self, person, grid):
-        for i in range(len(grid)):
-            for j in range(len(grid[0])):
-                if grid[i][j] is person:
-                    return i, j
 
+def update(grid, L):
+    for person in grid:
+        if person.generations_since_transmission < L:
+            person.generations_since_transmission += 1
+        else:
+            person.has_rumor = False
+            person.received_rumor_from = 0
+            person.last_generation_transmitter = None
 
 # class RumorSpreader:
 #     def __init__(self, grid, L):
@@ -171,29 +167,25 @@ class CellularAutomaton:
             if person.has_rumor:
                 color = palette.red
             else:
-                color = palette.green
+                color = palette.orange
 
-            # Find new position.
             i, j = person.pos
-            x0 = i * 4
-            y0 = j * 4
-            x1 = (i + 1) * 4
-            y1 = (j + 1) * 4
+            x0 = i
+            y0 = j
+            x1 = (i + 1)
+            y1 = (j + 1)
             self.app.frame.create_rectangle(x0, y0, x1, y1, fill=color)
-
-        # Choose probability according to threshold.
-        p = self.high_prob if self.n_infected < self.threshold else self.low_prob
 
         # Update each creature's infection and position.
         count_infected = 0
         for person in self.persons:
-            person.infect(self.grid, p, self.healing_time)
-            if person.infection > 0:
+            person.spread_rumor(self.persons, self.grid)
+            if person.has_rumor > 0:
                 count_infected += 1
-            person.move(self.grid)
 
         # Update the number of infected creatures.
         self.infected_persons = count_infected
+        # update(self.persons, self.l)
 
     def __update_info(self):
         """
@@ -258,7 +250,7 @@ class CellularAutomaton:
         self.s3 = S3
         self.s4 = S4
         self.gen_limit = GL
-        self.n_persons = DIM*DIM*self.p
+        self.n_persons = int(DIM*DIM*P)
 
         # Initialize a grid.
         self.grid = [[Cell() for j in range(DIM)] for i in range(DIM)]
