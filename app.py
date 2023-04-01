@@ -128,6 +128,16 @@ class App(Tk):
         self.S4 = create_entry(self.configuration, '0.1')
         self.S4.grid(row=5, column=1, padx=5, pady=5, sticky='w')
 
+        Label(
+            master=self.configuration,
+            font=fonts.regular,
+            bg=palette.bg,
+            fg=palette.fg,
+            text='Generation limit (Optional):'
+        ).grid(row=7, column=0, padx=5, pady=5, sticky='w')
+        self.gen_limit = create_entry(self.configuration, '')
+        self.gen_limit.grid(row=7, column=1, padx=5, pady=5, sticky='w')
+
         self.pause_btn = Button(
             master=self,
             width=12,
@@ -248,7 +258,7 @@ class App(Tk):
         """
 
         error_messages = []
-        P, L, S1, S2, S3, S4 = 0, 0, 0, 0, 0, 0
+        P, L, S1, S2, S3, S4, GL = 0, 0, 0, 0, 0, 0, 0
 
         try:
             L = int(self.L.get().strip())
@@ -298,8 +308,20 @@ class App(Tk):
             msg = 'S4 must be a float between 0 and 1.'
             error_messages.append(msg)
 
+        GL = self.gen_limit.get().strip()
+        if GL == '':
+            GL = 0
+        else:
+            try:
+                GL = int(GL)
+                if GL <= 0:
+                    raise ValueError
+            except ValueError:
+                msg = 'Generation limit must be a positive integer (or empty).'
+                error_messages.append(msg)
+
         if len(error_messages) == 0:
-            return P, L, S1, S2, S3, S4
+            return P, L, S1, S2, S3, S4, GL
         messagebox.showerror('Input Error', '\n'.join(error_messages))
         return None
 
@@ -312,9 +334,9 @@ class App(Tk):
         if self.cellular_automaton.state.is_stopped:
             params = self.get_input()
             if params:
-                P, L, S1, S2, S3, S4 = params
+                P, L, S1, S2, S3, S4, GL = params
                 self.run_btn.place_forget()
-                self.cellular_automaton.set(P, L, S1, S2, S3, S4)
+                self.cellular_automaton.set(P, L, S1, S2, S3, S4, GL)
                 self.cellular_automaton.run()
         elif self.cellular_automaton.state.is_paused:
             self.run_btn.place_forget()
