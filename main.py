@@ -55,3 +55,47 @@ class Network:
                     if random.random() < person.p:
                         person.rumored = True
                         self.rumored_count += 1
+ # PART B
+ def generate_population(n, p, l, s1_ratio, s2_ratio, s3_ratio, s4_ratio, cluster_size):
+    population = []
+    for i in range(n):
+        if i % cluster_size == 0:
+            # start a new cluster
+            s1_count = int(s1_ratio * cluster_size)
+            s2_count = int(s2_ratio * cluster_size)
+            s3_count = int(s3_ratio * cluster_size)
+            s4_count = int(s4_ratio * cluster_size)
+            
+            cluster = []
+            for j in range(s1_count):
+                cluster.append(Person(i+j, 'S1', []))
+            for j in range(s2_count):
+                cluster.append(Person(i+j+s1_count, 'S2', []))
+            for j in range(s3_count):
+                cluster.append(Person(i+j+s1_count+s2_count, 'S3', []))
+            for j in range(s4_count):
+                cluster.append(Person(i+j+s1_count+s2_count+s3_count, 'S4', []))
+            
+            population.extend(cluster)
+        else:
+            # add a random person to the previous cluster
+            cluster = population[-cluster_size:]
+            s1_count = sum(1 for p in cluster if p.type == 'S1')
+            s2_count = sum(1 for p in cluster if p.type == 'S2')
+            s3_count = sum(1 for p in cluster if p.type == 'S3')
+            s4_count = sum(1 for p in cluster if p.type == 'S4')
+            
+            r = random.random()
+            if r < s1_ratio:
+                cluster.append(Person(i, 'S1', []))
+            elif r < s1_ratio + s2_ratio:
+                cluster.append(Person(i, 'S2', []))
+            elif r < s1_ratio + s2_ratio + s3_ratio:
+                cluster.append(Person(i, 'S3', []))
+            else:
+                cluster.append(Person(i, 'S4', []))
+            
+            population[-cluster_size:] = cluster
+    
+    return population
+
