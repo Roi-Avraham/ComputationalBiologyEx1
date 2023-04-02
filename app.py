@@ -1,5 +1,4 @@
 from tkinter import Tk, LabelFrame, Label, Entry, Canvas, Button, messagebox
-from automatai import Automatai
 from automat import CellularAutomaton
 from style import palette, fonts
 

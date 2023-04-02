@@ -35,6 +35,7 @@ class Person:
         self.generations_since_transmission = np.inf
         self.pos = (i, j)
         self.L = L
+        self.is_spreading = False
 
     def set_has_rumor(self):
         if self.has_rumor:
@@ -42,39 +43,42 @@ class Person:
         else:
             self.has_rumor = True
 
-    def spread_rumor(self, grid, all_persons):
+    def spread_rumor(self, grid):
+        if self.generations_since_transmission < self.L:
+            return
         next_generation_rumor_spreaders = []
-        for person in all_persons:
-            if person.has_rumor:
-                for neighbor in self.get_neighbors(person, grid):
-                    if not neighbor.has_rumor:
-                        neighbor.received_rumor_from += 1
-                        if neighbor.skepticism == "S4":
-                            continue
-                        elif neighbor.skepticism == "S3":
-                            if neighbor.received_rumor_from >= 2 and random.random() < 1 / 3:
-                                neighbor.skepticism = "S2"
-                                next_generation_rumor_spreaders.append(neighbor)
-                            else:
-                                neighbor.has_rumor = True
-                                neighbor.generations_since_transmission = 0
-                        elif neighbor.skepticism == "S2":
-                            if neighbor.received_rumor_from >= 2 and random.random() < 2 / 3:
-                                neighbor.skepticism = "S1"
-                                next_generation_rumor_spreaders.append(neighbor)
-                            else:
-                                neighbor.has_rumor = True
-                                neighbor.generations_since_transmission = 0
-                        elif neighbor.skepticism == "S1":
-                            neighbor.has_rumor = True
-                            neighbor.generations_since_transmission = 0
-                        neighbor.last_generation_transmitter = person
-                self.last_generation_transmitter = person
+        for neighbor in self.get_neighbors(grid):
+            neighbor.received_rumor_from += 1
+            if neighbor.skepticism == "S4":
+                continue
+            elif neighbor.skepticism == "S3":
+                if neighbor.received_rumor_from < 2 and random.random() < 1 / 3:
+                    next_generation_rumor_spreaders.append(neighbor)
+                    neighbor.generations_since_transmission = 0
+                elif neighbor.received_rumor_from >= 2 and random.random() < 2 / 3:
+                    next_generation_rumor_spreaders.append(neighbor)
+                    neighbor.generations_since_transmission = 0
+                else:
+                    neighbor.generations_since_transmission += 1
+            elif neighbor.skepticism == "S2":
+                if neighbor.received_rumor_from < 2 and random.random() < 2 / 3:
+                    next_generation_rumor_spreaders.append(neighbor)
+                    neighbor.generations_since_transmission = 0
+                elif neighbor.received_rumor_from >= 2:
+                    next_generation_rumor_spreaders.append(neighbor)
+                    neighbor.generations_since_transmission = 0
+                else:
+                    neighbor.generations_since_transmission += 1
+            elif neighbor.skepticism == "S1":
+                next_generation_rumor_spreaders.append(neighbor)
+                neighbor.generations_since_transmission = 0
         for rumor_spreader in next_generation_rumor_spreaders:
             rumor_spreader.has_rumor = True
+            rumor_spreader.is_spreading = True
+        self.is_spreading = False
 
-    def get_neighbors(self, person, grid):
-        position = person.pos
+    def get_neighbors(self, grid):
+        position = self.pos
         i, j = position
         neighbors = []
         for di in range(-1, 2):
@@ -88,27 +92,6 @@ class Person:
                 if grid[neighbor_i][neighbor_j].get() is not None:
                     neighbors.append(grid[neighbor_i][neighbor_j].get())
         return neighbors
-
-
-def update(grid, L):
-    for person in grid:
-        if person.generations_since_transmission < L:
-            person.generations_since_transmission += 1
-        else:
-            person.has_rumor = False
-            person.received_rumor_from = 0
-            person.last_generation_transmitter = None
-
-# class RumorSpreader:
-#     def __init__(self, grid, L):
-#         self.grid = grid
-#         self.last_generation_transmitter = None
-#         self.L = L
-#
-#     def create_rumor(self):
-#         self.last_generation_transmitter = None
-#         random_person = random.choice(self.grid)
-#         random_person.has_rumor = True
 
 
 class CellularAutomaton:
@@ -180,12 +163,13 @@ class CellularAutomaton:
         count_infected = 0
         for person in self.persons:
             if person.has_rumor:
-                person.spread_rumor(self.grid, self.persons)
                 count_infected += 1
 
         # Update the number of infected creatures.
         self.infected_persons = count_infected
-        # update(self.persons, self.l)
+        for person in self.persons:
+            if person.is_spreading:
+                person.spread_rumor(self.grid)
 
     def __update_info(self):
         """
@@ -212,10 +196,10 @@ class CellularAutomaton:
             self.__update_info()
             self.trand.append(self.infected_persons)
             self.__advance()
-            if not self.gen_limit or self.generation <= self.gen_limit:
-                self.app.after(100, self.__loop)
-            else:
-                self.app.stop_btn_action()
+            # if not self.gen_limit or self.generation <= self.gen_limit:
+            #     self.app.after(100, self.__loop)
+            # else:
+            #     self.app.stop_btn_action()
 
     def plot(self):
         """
@@ -250,7 +234,7 @@ class CellularAutomaton:
         self.s3 = S3
         self.s4 = S4
         self.gen_limit = GL
-        self.n_persons = int(DIM*DIM*P)
+        self.n_persons = int(DIM * DIM * P)
 
         # Initialize a grid.
         self.grid = [[Cell() for j in range(DIM)] for i in range(DIM)]
@@ -261,10 +245,20 @@ class CellularAutomaton:
         positions = positions[:self.n_persons]
 
         probabilities = [self.s1, self.s2, self.s3, self.s4]
+        skepticism = ""
         # Create and place persons.
         for (i, j) in positions:
             type_of_person = random.choices(range(1, 5), weights=probabilities)[0]
-            person = Person(type_of_person, i, j, L)
+            if type_of_person == 1:
+                skepticism = "S1"
+            elif type_of_person == 2:
+                skepticism = "S2"
+            elif type_of_person == 3:
+                skepticism = "S3"
+            elif type_of_person == 4:
+                skepticism = "S4"
+
+            person = Person(skepticism, i, j, L)
             self.grid[i][j].put(person)
             self.persons.append(person)
 
@@ -272,6 +266,7 @@ class CellularAutomaton:
         shuffle(chosen)
         spreader = chosen[0]
         spreader.set_has_rumor()
+        spreader.spread_rumor(self.grid)
 
     def run(self):
         """
@@ -301,17 +296,3 @@ class CellularAutomaton:
         self.persons = []
         self.trand = []
         self.generation = 0
-
-    # def init_simulation(self):
-    #     # getting random numbers to represent the place in the matrix the cell get
-    #     cells_pos = random.sample(range(self.rows * self.cols), self.number_of_persons)
-    #     probabilities = [self.p_s1, self.p_s2, self.p_s3, self.p_s4]
-    #     random_person = random.choice(cells_pos)
-    #     for position in cells_pos:
-    #         type_of_person = random.choices(range(1, 5), weights=probabilities)[0]
-    #         if position == random_person:
-    #             # spreading person
-    #             self.create_person(position, type_of_person, INFECTED)
-    #             self.infected_persons += 1
-    #         else:
-    #             self.create_person(position, type_of_person, NON_INFECTED)
