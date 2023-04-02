@@ -229,7 +229,7 @@ class App(Tk):
             font=fonts.regular,
             bg=palette.bg,
             fg=palette.fg,
-            text=' \u2022  White - person.'
+            text=' \u2022  Orange - person.'
         ).grid(row=0, column=0, padx=5, pady=0, sticky='w')
 
         Label(
@@ -237,7 +237,7 @@ class App(Tk):
             font=fonts.regular,
             bg=palette.bg,
             fg=palette.fg,
-            text=' \u2022  Cyan - heard the rumor.'
+            text=' \u2022  Red - heard the rumor.'
         ).grid(row=1, column=0, padx=5, pady=0, sticky='w')
 
         # Credit.

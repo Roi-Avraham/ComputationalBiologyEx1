@@ -44,9 +44,9 @@ class Person:
 
     def spread_rumor(self, grid, all_persons):
         next_generation_rumor_spreaders = []
-        for person in grid:
+        for person in all_persons:
             if person.has_rumor:
-                for neighbor in self.get_neighbors(person, all_persons):
+                for neighbor in self.get_neighbors(person, grid):
                     if not neighbor.has_rumor:
                         neighbor.received_rumor_from += 1
                         if neighbor.skepticism == "S4":
@@ -179,8 +179,8 @@ class CellularAutomaton:
         # Update each creature's infection and position.
         count_infected = 0
         for person in self.persons:
-            person.spread_rumor(self.persons, self.grid)
-            if person.has_rumor > 0:
+            if person.has_rumor:
+                person.spread_rumor(self.grid, self.persons)
                 count_infected += 1
 
         # Update the number of infected creatures.
