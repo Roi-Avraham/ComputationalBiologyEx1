@@ -45,6 +45,7 @@ class Person:
 
     def spread_rumor(self, grid):
         if self.generations_since_transmission < self.L:
+            self.generations_since_transmission += 1
             return
         next_generation_rumor_spreaders = []
         for neighbor in self.get_neighbors(grid):
@@ -153,10 +154,10 @@ class CellularAutomaton:
                 color = palette.orange
 
             i, j = person.pos
-            x0 = i
-            y0 = j
-            x1 = (i + 1)
-            y1 = (j + 1)
+            x0 = i*8
+            y0 = j*8
+            x1 = (i + 1)*8
+            y1 = (j + 1)*8
             self.app.frame.create_rectangle(x0, y0, x1, y1, fill=color)
 
         # Update each creature's infection and position.
@@ -196,8 +197,9 @@ class CellularAutomaton:
             self.__update_info()
             self.trand.append(self.infected_persons)
             self.__advance()
+            self.app.after(100, self.__loop)
             # if not self.gen_limit or self.generation <= self.gen_limit:
-            #     self.app.after(100, self.__loop)
+            #
             # else:
             #     self.app.stop_btn_action()
 

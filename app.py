@@ -35,9 +35,9 @@ class App(Tk):
 
         # Inherit Tkinter class and configure it.
         super().__init__()
-        self.geometry('1100x830')
-        self.minsize(1100, 830)
-        self.maxsize(1100, 830)
+        self.geometry('1100x680')
+        self.minsize(1100, 680)
+        self.maxsize(1100, 680)
         self.configure(background=palette.bg, highlightcolor=palette.fg)
         self.title('Spreading Rumours')
 
@@ -181,7 +181,7 @@ class App(Tk):
             text='Information',
             font=fonts.regular
         )
-        self.information.place(relx=0.01, rely=0.38, width=265)
+        self.information.place(relx=0.01, rely=0.40, width=265)
 
         Label(
             master=self.information,
