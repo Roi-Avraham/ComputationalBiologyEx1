@@ -214,6 +214,12 @@ class CellularAutomaton:
         plt.ylabel('Infected')
         plt.plot(list(range(len(self.trand))), self.trand)
         plt.show()
+        # save the plot into a csv file
+        with open('plot.csv', '+a') as f:
+            f.write('Generation, Got the rumor (number of persons) \n')
+            for i in range(len(self.trand)):
+                f.write(str(i) + ',' + str(self.trand[i]) + '\n')
+
 
     def set(self, P, L, S1, S2, S3, S4, GL):
         """
