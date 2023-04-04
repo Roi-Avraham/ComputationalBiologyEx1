@@ -35,9 +35,9 @@ class App(Tk):
 
         # Inherit Tkinter class and configure it.
         super().__init__()
-        self.geometry('1100x680')
-        self.minsize(1100, 680)
-        self.maxsize(1100, 680)
+        self.geometry('1100x650')
+        self.minsize(1100, 650)
+        self.maxsize(1100, 650)
         self.configure(background=palette.bg, highlightcolor=palette.fg)
         self.title('Spreading Rumours')
 
