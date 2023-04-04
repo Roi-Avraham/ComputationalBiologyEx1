@@ -197,11 +197,10 @@ class CellularAutomaton:
             self.__update_info()
             self.trand.append(self.infected_persons)
             self.__advance()
-            self.app.after(100, self.__loop)
-            # if not self.gen_limit or self.generation <= self.gen_limit:
-            #
-            # else:
-            #     self.app.stop_btn_action()
+            if self.generation <= self.gen_limit:
+                self.app.after(100, self.__loop)
+            else:
+                self.app.stop_btn_action()
 
     def plot(self):
         """
@@ -219,7 +218,6 @@ class CellularAutomaton:
             f.write('Generation, Got the rumor (number of persons) \n')
             for i in range(len(self.trand)):
                 f.write(str(i) + ',' + str(self.trand[i]) + '\n')
-
 
     def set(self, P, L, S1, S2, S3, S4, GL):
         """
