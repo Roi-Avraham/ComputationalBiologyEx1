@@ -155,9 +155,9 @@ class CellularAutomaton:
 
             i, j = person.pos
             x0 = i*8
-            y0 = j*8
+            y0 = j*6
             x1 = (i + 1)*8
-            y1 = (j + 1)*8
+            y1 = (j + 1)*6
             self.app.frame.create_rectangle(x0, y0, x1, y1, fill=color)
 
         # Update each creature's infection and position.
@@ -211,7 +211,8 @@ class CellularAutomaton:
         plt.title('Number of persons who heard the rumor per generation')
         plt.xlabel('Generation')
         plt.ylabel('Infected')
-        plt.plot(list(range(len(self.trand))), self.trand)
+        plt.plot([i+1 for i in range(len(self.trand))], self.trand)
+        print(len(self.trand))
         plt.show()
         # save the plot into a csv file
         with open('plot.csv', '+a') as f:
@@ -302,3 +303,4 @@ class CellularAutomaton:
         self.persons = []
         self.trand = []
         self.generation = 0
+        self.infected_persons = 0

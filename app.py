@@ -1,4 +1,7 @@
 from tkinter import Tk, LabelFrame, Label, Entry, Canvas, Button, messagebox
+
+import numpy as np
+
 from automat import CellularAutomaton
 from style import palette, fonts
 
@@ -53,8 +56,8 @@ class App(Tk):
             bd=0,
             highlightbackground=palette.canvas_outline,
             width=800,
-            height=800)
-        self.frame.place(relx=0.26, rely=0.025)
+            height=600)
+        self.frame.place(relx=0.26, rely=0.015)
         self.cellular_automaton = CellularAutomaton(self)
 
         # Create configurations section with labels, entries and buttons.
@@ -309,7 +312,7 @@ class App(Tk):
 
         GL = self.gen_limit.get().strip()
         if GL == '':
-            GL = 0
+            GL = np.inf
         else:
             try:
                 GL = int(GL)
