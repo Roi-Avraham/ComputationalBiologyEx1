@@ -210,8 +210,9 @@ class CellularAutomaton:
         plt.figure()
         plt.title('Number of persons who heard the rumor per generation')
         plt.xlabel('Generation')
-        plt.ylabel('Infected')
-        plt.plot([i+1 for i in range(len(self.trand))], self.trand)
+        plt.ylabel('percentage of listeners')
+        percentage = [(x * 100) / len(self.persons) for x in self.trand]
+        plt.plot([i+1 for i in range(len(self.trand))], percentage)
         print(len(self.trand))
         plt.show()
         # save the plot into a csv file

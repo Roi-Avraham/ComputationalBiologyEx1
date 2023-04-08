@@ -333,6 +333,7 @@ class App(Tk):
         button. Note that those are the same button with changing label.
         :return: None.
         """
+
         if self.cellular_automaton.state.is_stopped:
             params = self.get_input()
             if params:
