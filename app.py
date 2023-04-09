@@ -1,3 +1,4 @@
+import time
 from tkinter import Tk, LabelFrame, Label, Entry, Canvas, Button, messagebox
 
 import numpy as np
@@ -43,6 +44,8 @@ class App(Tk):
         self.maxsize(1100, 650)
         self.configure(background=palette.bg, highlightcolor=palette.fg)
         self.title('Spreading Rumours')
+        self.isTest = False
+        self.iterations = 0
 
         def on_closing():
             if messagebox.askokcancel("Quit", "Do you want to quit?"):
@@ -163,6 +166,18 @@ class App(Tk):
             command=self.stop_btn_action
         )
         self.stop_btn.place(relx=0.137, rely=0.745, width=125, height=40)
+
+        # if self.isTest is true, then the run button will automatically start the simulation and run it for the number in self.iterations
+        if self.isTest:
+            self.run_btn_action()
+            for i in range(self.iterations):
+                self.cellular_automaton.update()
+                self.cellular_automaton.draw()
+                self.update()
+                time.sleep(0.1)
+            self.stop_btn_action()
+            self.destroy()
+            exit(0)
 
         self.run_btn = Button(
             master=self,
