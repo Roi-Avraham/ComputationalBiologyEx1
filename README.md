@@ -21,8 +21,8 @@ Basic rules of the network
 4. If a person passed on the rumor, he will not pass it on for L generations (a learned parameter) and then only if he receives a rumor 
    again will he be able to pass it on.
    
-#Table of Contents
+# Table of Contents
   Installation
   Usage
   
-#Installation
+# Installation
