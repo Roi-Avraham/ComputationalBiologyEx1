@@ -20,9 +20,7 @@ Basic rules of the network
    to that generation and will act in the form of one level of skepticism below.
 4. If a person passed on the rumor, he will not pass it on for L generations (a learned parameter) and then only if he receives a rumor 
    again will he be able to pass it on.
-   
-# Table of Contents
-  Installation
-  Usage
   
 # Installation
+    
+# Usage
