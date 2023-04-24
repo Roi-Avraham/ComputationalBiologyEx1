@@ -1,4 +1,3 @@
-import time
 from tkinter import Tk, LabelFrame, Label, Entry, Canvas, Button, messagebox
 
 import numpy as np
@@ -44,8 +43,6 @@ class App(Tk):
         self.maxsize(1100, 650)
         self.configure(background=palette.bg, highlightcolor=palette.fg)
         self.title('Spreading Rumours')
-        self.isTest = False
-        self.iterations = 0
 
         def on_closing():
             if messagebox.askokcancel("Quit", "Do you want to quit?"):
@@ -80,7 +77,7 @@ class App(Tk):
             fg=palette.fg,
             text='Population density:'
         ).grid(row=0, column=0, padx=5, pady=5, sticky='w')
-        self.n_person = create_entry(self.configuration, '0.5')
+        self.n_person = create_entry(self.configuration, '0.6')
         self.n_person.grid(row=0, column=1, padx=5, pady=5, sticky='w')
 
         Label(
@@ -100,7 +97,7 @@ class App(Tk):
             fg=palette.fg,
             text='S1:'
         ).grid(row=2, column=0, padx=5, pady=5, sticky='w')
-        self.S1 = create_entry(self.configuration, '0.4')
+        self.S1 = create_entry(self.configuration, '0.3')
         self.S1.grid(row=2, column=1, padx=5, pady=5, sticky='w')
 
         Label(
@@ -110,7 +107,7 @@ class App(Tk):
             fg=palette.fg,
             text='S2:'
         ).grid(row=3, column=0, padx=5, pady=5, sticky='w')
-        self.S2 = create_entry(self.configuration, '0.2')
+        self.S2 = create_entry(self.configuration, '0.25')
         self.S2.grid(row=3, column=1, padx=5, pady=5, sticky='w')
 
         Label(
@@ -120,7 +117,7 @@ class App(Tk):
             fg=palette.fg,
             text='S3:'
         ).grid(row=4, column=0, padx=5, pady=5, sticky='w')
-        self.S3 = create_entry(self.configuration, '0.3')
+        self.S3 = create_entry(self.configuration, '0.2')
         self.S3.grid(row=4, column=1, padx=5, pady=5, sticky='w')
 
         Label(
@@ -130,7 +127,7 @@ class App(Tk):
             fg=palette.fg,
             text='S4:'
         ).grid(row=5, column=0, padx=5, pady=5, sticky='w')
-        self.S4 = create_entry(self.configuration, '0.1')
+        self.S4 = create_entry(self.configuration, '0.25')
         self.S4.grid(row=5, column=1, padx=5, pady=5, sticky='w')
 
         Label(
@@ -166,18 +163,6 @@ class App(Tk):
             command=self.stop_btn_action
         )
         self.stop_btn.place(relx=0.137, rely=0.745, width=125, height=40)
-
-        # if self.isTest is true, then the run button will automatically start the simulation and run it for the number in self.iterations
-        if self.isTest:
-            self.run_btn_action()
-            for i in range(self.iterations):
-                self.cellular_automaton.update()
-                self.cellular_automaton.draw()
-                self.update()
-                time.sleep(0.1)
-            self.stop_btn_action()
-            self.destroy()
-            exit(0)
 
         self.run_btn = Button(
             master=self,
@@ -354,7 +339,7 @@ class App(Tk):
             if params:
                 P, L, S1, S2, S3, S4, GL = params
                 self.run_btn.place_forget()
-                self.cellular_automaton.set(P, L, S1, S2, S3, S4, GL)
+                self.cellular_automaton.set_slow(P, L, S1, S2, S3, S4, GL)
                 self.cellular_automaton.run()
         elif self.cellular_automaton.state.is_paused:
             self.run_btn.place_forget()
