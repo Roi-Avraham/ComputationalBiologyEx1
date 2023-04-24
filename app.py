@@ -339,7 +339,7 @@ class App(Tk):
             if params:
                 P, L, S1, S2, S3, S4, GL = params
                 self.run_btn.place_forget()
-                self.cellular_automaton.set_slow(P, L, S1, S2, S3, S4, GL)
+                self.cellular_automaton.set(P, L, S1, S2, S3, S4, GL)
                 self.cellular_automaton.run()
         elif self.cellular_automaton.state.is_paused:
             self.run_btn.place_forget()
