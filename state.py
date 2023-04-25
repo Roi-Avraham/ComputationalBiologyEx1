@@ -1,6 +1,6 @@
 class State:
     """
-    This class represents automata's states, implementing State Design Pattern.
+    This class represents the states of the Automat, implementing State Design Pattern.
     Each method of it set True to one attribute, and False to all the others.
     """
 
