@@ -117,29 +117,30 @@ class Person:
         self.is_spreading = False
 
 
-# this function returns a list of the neighbors of the person
-def get_neighbors(self, grid):
-    '''
-    This function returns a list of the neighbors of the person
-    :param self:
-    :param grid:
-    :return: neighbors
-    '''
-    position = self.pos
-    i, j = position
-    neighbors = []
-    # the following for loop checks the neighbors of the person and adds them to the neighbors list
-    for di in range(-1, 2):
-        for dj in range(-1, 2):
-            if di == 0 and dj == 0:
-                continue
-            neighbor_i, neighbor_j = i + di, j + dj
-            if neighbor_i < 0 or neighbor_i >= DIM or \
-                    neighbor_j < 0 or neighbor_j >= DIM:
-                continue
-            if grid[neighbor_i][neighbor_j].get() is not None:
-                neighbors.append(grid[neighbor_i][neighbor_j].get())  # add the neighbor to the neighbors list
-    return neighbors
+    # this function returns a list of the neighbors of the person
+    def get_neighbors(self, grid):
+        '''
+            This function returns a list of the neighbors of the person
+            :param self:
+            :param grid:
+            :return: neighbors
+            '''
+        position = self.pos
+        i, j = position
+        neighbors = []
+        # the following for loop checks the neighbors of the person and adds them to the neighbors list
+        for di in range(-1, 2):
+            for dj in range(-1, 2):
+                if di == 0 and dj == 0:
+                    continue
+                neighbor_i, neighbor_j = i + di, j + dj
+                if neighbor_i < 0 or neighbor_i >= DIM or \
+                        neighbor_j < 0 or neighbor_j >= DIM:
+                    continue
+                if grid[neighbor_i][neighbor_j].get() is not None:
+                    neighbors.append(grid[neighbor_i][neighbor_j].get())  # add the neighbor to the neighbors list
+        return neighbors
+
 
 
 class CellularAutomaton:
