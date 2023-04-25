@@ -140,6 +140,16 @@ class App(Tk):
         self.gen_limit = create_entry(self.configuration, '')
         self.gen_limit.grid(row=7, column=1, padx=5, pady=5, sticky='w')
 
+        Label(
+            master=self.configuration,
+            font=fonts.regular,
+            bg=palette.bg,
+            fg=palette.fg,
+            text='Run mode:'
+        ).grid(row=8, column=0, padx=5, pady=5, sticky='w')
+        self.run_mode = create_entry(self.configuration, 'R')
+        self.run_mode.grid(row=8, column=1, padx=5, pady=5, sticky='w')
+
         self.pause_btn = Button(
             master=self,
             width=12,
@@ -150,7 +160,7 @@ class App(Tk):
             text='\u23F8 Pause',
             command=self.pause_btn_action
         )
-        self.pause_btn.place(relx=0.01, rely=0.745, width=125, height=40)
+        self.pause_btn.place(relx=0.01, rely=0.8, width=125, height=40)
 
         self.stop_btn = Button(
             master=self,
@@ -162,7 +172,7 @@ class App(Tk):
             text='\u23F9 Stop',
             command=self.stop_btn_action
         )
-        self.stop_btn.place(relx=0.137, rely=0.745, width=125, height=40)
+        self.stop_btn.place(relx=0.137, rely=0.8, width=125, height=40)
 
         self.run_btn = Button(
             master=self,
@@ -174,7 +184,7 @@ class App(Tk):
             text='\u23F5 Start   ',
             command=self.run_btn_action
         )
-        self.run_btn.place(relx=0.01, rely=0.745, width=265, height=40)
+        self.run_btn.place(relx=0.01, rely=0.8, width=265, height=40)
 
         # Create information section with labels and entries.
         self.information = LabelFrame(
@@ -184,7 +194,7 @@ class App(Tk):
             text='Information',
             font=fonts.regular
         )
-        self.information.place(relx=0.01, rely=0.40, width=265)
+        self.information.place(relx=0.01, rely=0.48, width=265)
 
         Label(
             master=self.information,
@@ -224,7 +234,7 @@ class App(Tk):
             text='Legend',
             font=fonts.regular
         )
-        self.legend.place(relx=0.01, rely=0.585, width=265)
+        self.legend.place(relx=0.01, rely=0.68, width=265)
 
         Label(
             master=self.legend,
@@ -322,8 +332,13 @@ class App(Tk):
                 msg = 'Generation limit must be a positive integer (or empty).'
                 error_messages.append(msg)
 
+        RUNMODE= self.run_mode.get().strip()
+        if RUNMODE != "R" and RUNMODE != "F" and RUNMODE != "S":
+            msg = 'Run mode must be R (for regular mode) or F (for fast mode) or S (for slow mode)'
+            error_messages.append(msg)
+
         if len(error_messages) == 0:
-            return P, L, S1, S2, S3, S4, GL
+            return P, L, S1, S2, S3, S4, GL, RUNMODE
         messagebox.showerror('Input Error', '\n'.join(error_messages))
         return None
 
@@ -337,9 +352,14 @@ class App(Tk):
         if self.cellular_automaton.state.is_stopped:
             params = self.get_input()
             if params:
-                P, L, S1, S2, S3, S4, GL = params
+                P, L, S1, S2, S3, S4, GL, RUNMODE = params
                 self.run_btn.place_forget()
-                self.cellular_automaton.set(P, L, S1, S2, S3, S4, GL)
+                if RUNMODE == "R":
+                    self.cellular_automaton.set(P, L, S1, S2, S3, S4, GL)
+                elif RUNMODE == "S":
+                    self.cellular_automaton.set_slow(P, L, S1, S2, S3, S4, GL)
+                elif RUNMODE == "F":
+                    self.cellular_automaton.set_fast(P, L, S1, S2, S3, S4, GL)
                 self.cellular_automaton.run()
         elif self.cellular_automaton.state.is_paused:
             self.run_btn.place_forget()
@@ -350,7 +370,7 @@ class App(Tk):
         Defines the action to be taken when user clicks the "Pause" button.
         :return: None.
         """
-        self.run_btn.place(relx=0.01, rely=0.745, width=265, height=40)
+        self.run_btn.place(relx=0.01, rely=0.8, width=265, height=40)
         self.run_btn.configure(text='\u23F5 Resume  ', font=fonts.bold)
         self.cellular_automaton.pause()
 
@@ -359,6 +379,6 @@ class App(Tk):
         Defines the action to be taken when user click the "Stop" button.
         :return: None.
         """
-        self.run_btn.place(relx=0.01, rely=0.745, width=265, height=40)
+        self.run_btn.place(relx=0.01, rely=0.8, width=265, height=40)
         self.run_btn.configure(text='\u23F5 Start   ', font=fonts.bold)
         self.cellular_automaton.stop()
