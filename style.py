@@ -15,6 +15,9 @@ class Palette:
         self.orange = '#ffa500'
         self.cyan = '#00ffff'
         self.white = '#ffffff'
+        self.some1 = 'purple'
+        self.some2 = 'yellow'
+
 
 
 class Fonts:

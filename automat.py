@@ -167,7 +167,7 @@ class CellularAutomaton:
             if person.has_rumor:
                 color = palette.red
             else:
-                color = palette.orange
+                color =palette.orange
 
             i, j = person.pos
             x0 = i*8
@@ -369,7 +369,7 @@ class CellularAutomaton:
 
         # Create and place persons.
         for (i, j) in positions:
-            person = Person("S1", i, j, L)
+            person = Person("S3", i, j, L)
             self.grid[i][j].put(person)
             self.persons.append(person)
 
@@ -377,12 +377,13 @@ class CellularAutomaton:
         sorted_persons = sorted(sorted_persons_1, key=lambda p: p.pos[0])
         list1 = []
         turn = 1
+        print(len(sorted_persons))
         for person in sorted_persons:
             if turn == 1:
                 if self.n_s1 > 0:
                     person.skepticism = "S1"
                     list1.append(person)
-                    self.n_s1 -= 1
+                    self.n_s1 = self.n_s1 - 1
                 elif self.n_s4 > 0:
                     person.skepticism = "S4"
                     self.n_s4 -= 1
@@ -405,7 +406,7 @@ class CellularAutomaton:
                 elif self.n_s1 > 0:
                     person.skepticism = "S1"
                     list1.append(person)
-                    self.n_s1 -= 1
+                    self.n_s1 = self.n_s1 - 1
             elif turn == 3:
                 if self.n_s2 > 0:
                     person.skepticism = "S2"
@@ -416,7 +417,7 @@ class CellularAutomaton:
                 elif self.n_s1 > 0:
                     person.skepticism = "S1"
                     list1.append(person)
-                    self.n_s1 -= 1
+                    self.n_s1 = self.n_s1 - 1
                 elif self.n_s4 > 0:
                     person.skepticism = "S4"
                     self.n_s4 -= 1
@@ -427,15 +428,17 @@ class CellularAutomaton:
                 elif self.n_s1 > 0:
                     person.skepticism = "S1"
                     list1.append(person)
-                    self.n_s1 -= 1
+                    self.n_s1 = self.n_s1 - 1
                 elif self.n_s4 > 0:
                     person.skepticism = "S4"
                     self.n_s4 -= 1
                 elif self.n_s2 > 0:
                     person.skepticism = "S2"
                     self.n_s2 -= 1
+                turn = 1
+                continue
 
-            turn += 1
+            turn = turn + 1
 
         chosen = self.persons
         shuffle(chosen)
