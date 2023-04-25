@@ -31,7 +31,11 @@ Basic rules of the network
 
 # Dictionary
 app.py - Document containing the app settings, windows, grid, entries and buttons.
+
 automat.py - Document that containing the engine behind the simulator. Calculates the number and postion of the persons inside the grid, their skeptisem and calculte the number of people who heard the rumor in each generation. a Each generation presents the results on the grid.
+
 state.py - Document that represents automat's states
+
 style.py - Document that represents a color palette for easy access to pre-defined colors.
+
 main.py - main function.
