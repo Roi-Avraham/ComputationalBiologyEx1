@@ -43,14 +43,14 @@ class App(Tk):
         self.maxsize(1100, 650)
         self.configure(background=palette.bg, highlightcolor=palette.fg)
         self.title('Spreading Rumours')
-
+        # close window event
         def on_closing():
             if messagebox.askokcancel("Quit", "Do you want to quit?"):
                 self.destroy()
                 exit(0)
         self.protocol("WM_DELETE_WINDOW", on_closing)
 
-        # Create a frame for a cellular automata, and instantiate and automata.
+        # Create a frame for a cellular automat and an instance of it.
         self.frame = Canvas(
             bg=palette.canvas_bg,
             bd=0,

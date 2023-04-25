@@ -10,8 +10,8 @@ DIM = 100
 
 class Cell:
     """
-    This class defines a cell in the automata, which is a place-holder for a
-    Person. One can put a person in the cell,and check if the cell is empty.
+    This class defines a cell in the automat, which is a place-holder for a
+    Person. One can put a person in the cell, and check if the cell is empty.
     """
 
     def __init__(self):
@@ -29,8 +29,9 @@ class Cell:
 
 class Person:
     """
-        This class defines a person in the automata.
+        This class defines a person that can populate a cell.
     """
+
     def __init__(self, skepticism, i, j, L):
         self.skepticism = skepticism
         self.has_rumor = False
@@ -50,7 +51,15 @@ class Person:
         else:
             self.has_rumor = True
 
+    # this bool function checks if the person is ready to spread the rumor to its neighbors according to the L parameter
+    # if the person is ready to spread the rumor, it returns True, otherwise it returns False
     def check_spread(self):
+        """
+    The check_spread function is used to determine whether or not a virus should be able to spread.
+        If the virus has been transmitted within the last L generations, it will not be allowed to spread.
+        This function returns True if the virus can spread and False otherwise.
+    :return bool:
+    """
         if self.wait_to_spread:
             if self.generations_since_transmission <= self.L - 1:
                 self.generations_since_transmission += 1
@@ -62,12 +71,27 @@ class Person:
                 return True
         return True
 
+    # this function spreads the rumor to the neighbors of the person
+    # it also updates the rumor's generation
     def spread_rumor(self, grid):
-        self.generations_since_transmission = 0
-        next_generation_rumor_spreaders = []
+        """
+    The spread_rumor function is called by the spread_rumor method of a Person object. The function takes in a grid
+    parameter, which is the list of lists that represents the grid. It then sets its own generations_since_transmission
+    attribute to 0 and creates an empty list for next generation rumor spreaders. It then iterates through all of its
+    neighbors and checks their skepticism level to see if they will become rumor spreaders in the next generation (if they
+    will receive and pass on rumors). If so, it adds them to this list. Finally, it sets itself as waiting to pass on rumors
+
+    :param self: Refer to the object that is calling the function
+    :param grid: Access the neighbors of a cell
+    :return: A list of the neighbors that will spread the rumor in the next generation
+    """
+        self.generations_since_transmission = 0  # set the rumor's generation to 0
+        next_generation_rumor_spreaders = []  # list of the neighbors that will spread the rumor in the next generation
         for neighbor in self.get_neighbors(grid):
             neighbor.has_rumor = True
             neighbor.received_rumor_from += 1
+            # the following if-else statements check the neighbor's skepticism level and decide if the neighbor will
+            # spread the rumor to its neighbors
             if neighbor.skepticism == "S4":
                 if neighbor.received_rumor_from >= 2 and random.random() < 1 / 3:
                     next_generation_rumor_spreaders.append(neighbor)
@@ -83,39 +107,51 @@ class Person:
                     next_generation_rumor_spreaders.append(neighbor)
             elif neighbor.skepticism == "S1":
                 next_generation_rumor_spreaders.append(neighbor)
+        # set the rumor_spreader's is_spreading attribute to True so it will spread the rumor in the next generation
         for rumor_spreader in next_generation_rumor_spreaders:
             rumor_spreader.is_spreading = True
-
+        # set the rumor_spreader's wait_to_spread attribute to True so it will wait to spread the rumor in the next
+        # generation
+        # the wait_to_spread attribute is used to make sure that the rumor will spread only after the L generations
         self.wait_to_spread = True
         self.is_spreading = False
 
-    def get_neighbors(self, grid):
-        position = self.pos
-        i, j = position
-        neighbors = []
-        for di in range(-1, 2):
-            for dj in range(-1, 2):
-                if di == 0 and dj == 0:
-                    continue
-                neighbor_i, neighbor_j = i + di, j + dj
-                if neighbor_i < 0 or neighbor_i >= DIM or \
-                        neighbor_j < 0 or neighbor_j >= DIM:
-                    continue
-                if grid[neighbor_i][neighbor_j].get() is not None:
-                    neighbors.append(grid[neighbor_i][neighbor_j].get())
-        return neighbors
+
+# this function returns a list of the neighbors of the person
+def get_neighbors(self, grid):
+    '''
+    This function returns a list of the neighbors of the person
+    :param self:
+    :param grid:
+    :return: neighbors
+    '''
+    position = self.pos
+    i, j = position
+    neighbors = []
+    # the following for loop checks the neighbors of the person and adds them to the neighbors list
+    for di in range(-1, 2):
+        for dj in range(-1, 2):
+            if di == 0 and dj == 0:
+                continue
+            neighbor_i, neighbor_j = i + di, j + dj
+            if neighbor_i < 0 or neighbor_i >= DIM or \
+                    neighbor_j < 0 or neighbor_j >= DIM:
+                continue
+            if grid[neighbor_i][neighbor_j].get() is not None:
+                neighbors.append(grid[neighbor_i][neighbor_j].get())  # add the neighbor to the neighbors list
+    return neighbors
 
 
 class CellularAutomaton:
     """
-    This class implements the required cellular automata
+    This class implements the required cellular automat for the experiment.
     """
 
     def __init__(self, app):
         """
-        Automata's constructor. An automata object contains a state, a pointer
+        Cellular constructor. An automat object contains a state, a pointer
         to the containing App object, dimensions, parameters, a grid as a 2d
-        list, a list of persons in the automata and a list named "trand" that
+        list, a list of people in the automat and a list named "trand" that
         stores the number of the persons that heard the romer in each generation.
         :param app: a pointer to the containing App object.
         :return: Automata object.
@@ -144,7 +180,7 @@ class CellularAutomaton:
 
         # Data-structures.
         self.grid = []  # Provides a way for cell occupancy check.
-        self.persons = [] # Store all the persons.
+        self.persons = []  # Store all the persons.
         self.trand = []  # Store number of infected in each generation.
 
     def __advance(self):
@@ -170,10 +206,10 @@ class CellularAutomaton:
                 color = palette.orange
 
             i, j = person.pos
-            x0 = i*8
-            y0 = j*6
-            x1 = (i + 1)*8
-            y1 = (j + 1)*6
+            x0 = i * 8
+            y0 = j * 6
+            x1 = (i + 1) * 8
+            y1 = (j + 1) * 6
             self.app.frame.create_rectangle(x0, y0, x1, y1, fill=color)
 
         # Update each person's infection(hearding the romer).
@@ -197,6 +233,7 @@ class CellularAutomaton:
         This private method updates information entries in the app.
         :return: None.
         """
+        # Update entries.
         self.app.generation.delete(0, 'end')
         self.app.generation.insert(0, self.generation)
         self.app.h_rumor.delete(0, 'end')
@@ -232,11 +269,24 @@ class CellularAutomaton:
         plt.xlabel('Generation')
         plt.ylabel('percentage of listeners')
         percentage = [(x * 100) / len(self.persons) for x in self.trand]
-        plt.plot([i+1 for i in range(len(self.trand))], percentage)
+        plt.plot([i + 1 for i in range(len(self.trand))], percentage)
         plt.show()
 
     def set(self, P, L, S1, S2, S3, S4, GL):
         # Set parameters.
+        """
+        The set function initializes the grid with a given number of persons,
+        and sets their skepticism levels. It also randomly selects one person to be
+        the spreader of the rumor.
+        :param P: the percentage of the grid that is occupied by persons.
+        :param L: the number of neighbors that each person can hear.
+        :param S1: the percentage of the population that is skeptical level 1.
+        :param S2: the percentage of the population that is skeptical level 2.
+        :param S3: the percentage of the population that is skeptical level 3.
+        :param S4: the percentage of the population that is skeptical level 4.
+        :param GL: the generation limit.
+        :return: None.
+        """
         self.p = P
         self.l = L
         self.s1 = S1
@@ -282,7 +332,24 @@ class CellularAutomaton:
         spreader.set_has_rumor()
         spreader.spread_rumor(self.grid)
 
-    def set_slow(self,P, L, S1, S2, S3, S4, GL):
+    def set_slow(self, P, L, S1, S2, S3, S4, GL):
+        """
+    The set_slow function is used to set the parameters of the simulation.
+    It takes in 7 arguments: P, L, S_i for i = 1,...4 and GL.
+    P is a float between 0 and 1 that represents the population density of persons on a grid.
+    L is an integer that represents how many steps each person can take before they die out (or leave).
+    S_i for i = 1,...4 are floats between 0 and 1 that represent what percentage of people have skepticism level S_i.  The sum of these 4 values must be equal to one (otherwise there will be some people who don't
+
+    :param self: Refer to the instance of the class
+    :param P: Determine the number of persons in the grid
+    :param L: Set the length of time a person will stay in one cell
+    :param S1: Set the number of people who are skeptical about the rumor
+    :param S2: Determine the number of people who are skeptical
+    :param S3: Determine the number of people who are skeptical
+    :param S4: Set the number of people who are skeptical about the rumor
+    :param GL: Set the generation limit
+    :return: A list of persons who are labeled s2
+    """
         # Set parameters.
         self.p = P
         self.l = L
@@ -310,12 +377,13 @@ class CellularAutomaton:
             person = Person("S1", i, j, L)
             self.grid[i][j].put(person)
             self.persons.append(person)
-
+        # sort the list of persons by their x and y coordinates
         sorted_persons_1 = sorted(self.persons, key=lambda p: p.pos[1])
         sorted_persons = sorted(sorted_persons_1, key=lambda p: p.pos[0])
         list3 = []
         half = self.n_s4 / 2
         half2 = self.n_s4 / 2
+        # assign the skepticism level to each person in the list of persons
         for person in sorted_persons:
             if half > 0:
                 half = half - 1
@@ -345,6 +413,22 @@ class CellularAutomaton:
         spreader.spread_rumor(self.grid)
 
     def set_fast(self, P, L, S1, S2, S3, S4, GL):
+        """
+    The set_fast function is a faster way to set up the simulation.
+    It takes in all of the parameters that are needed for the simulation, and then sets them up.
+    The function also creates a grid with cells, and places persons on it randomly.
+    Then it sorts these persons by their position (x-coordinate first), so that they can be placed into groups based on their skepticism level.
+
+    :param self: Refer to the object itself
+    :param P: Determine the density of people in the grid
+    :param L: Set the limit of how many times a person can spread the rumor
+    :param S1: Set the number of people with skepticism level 1
+    :param S2: Determine the number of people with skepticism level s2
+    :param S3: Set the amount of people with skepticism level 3
+    :param S4: Set the number of people that are skeptical about the rumor
+    :param GL: Set the generation limit
+    :return: A list of the persons that have skepticism 1
+    """
         # Set parameters.
         self.p = P
         self.l = L
