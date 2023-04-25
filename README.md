@@ -25,14 +25,14 @@ Basic rules of the network
     You can download the code, in the folder there is an exe file for fast execution by double-clicking on: SpreadingRumor.exe
     
 # Usage
-    The application has a configure bar for the purpose of studying the rate of spreading the rumor among the population. The user can choose the following: 
-    1)the values density percentage (P) - must be number between 0 to 1 , 2) choose the probability of the diffrent levels of the Skeptisem (s1,s2,s3,s4) 3)choose the number of generations the automat will run (Generation limit (Optional)) 4) choose the run mode: there are 3 options: R - regular mode (this is the code for סעיף א). S - slow mode (this is code for סעיף ב) F - fast mode(this is code for סעיף ב) 
-    While running, the user receives important information about the system, such as the total percentage of pepole who heard the rumor, the number of pepole who heard the rumor. At the end of the run, when the user clicks on the 'Stop' button, a graph will appear.
+ The application has a configure bar for the purpose of studying the rate of spreading the rumor among the population<br>. The user can choose the following:<br>
+ 1)the values density percentage (P) - must be number between 0 to 1 <br>2) choose the probability of the diffrent levels of the Skeptisem (s1,s2,s3,s4) <br>3)choose the number of generations the automat will run (Generation limit (Optional)) <br>4) choose the run mode: there are 3 options: R - regular mode (this is the code for סעיף א). S - slow mode (this is code for סעיף ב) F - fast mode(this is code for סעיף ב) 
+    <br>While running, the user receives important information about the system, such as the total percentage of pepole who heard the rumor, the number of pepole who heard the rumor. At the end of the run, <br>when the user clicks on the 'Stop' button, a graph will appear.
 
 # Dictionary
 app.py - Document containing the app settings, windows, grid, entries and buttons.
 <br>
-automat.py - Document that containing the engine behind the simulator. Calculates the number and postion of the persons inside the grid, their skeptisem and calculte the number of people who heard the rumor in each generation. a Each generation presents the results on the grid.
+automat.py - Document that containing the engine behind the simulator. Calculates the number and postion of the persons inside the grid,<br> their skeptisem and calculte the number of people who heard the rumor in each generation. a Each generation presents the results on the grid.
 <br>
 state.py - Document that represents automat's states
 <br>
