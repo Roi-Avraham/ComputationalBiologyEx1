@@ -1,5 +1,6 @@
 # Computational Biology Ex1
 
+# Description
 In this exercise we have to write a cellular automaton in which we investigated how a rumor distribution network works.
 For the sake of researching this style, we created a 100x100 grid where each cell can be occupied by one person.
 We denoted the population density by the parameter P which we will change throughout the study.
